@@ -32,9 +32,11 @@ class _EditUserProfileState extends State<EditUserProfile> {
     TextEditingController displayCon = TextEditingController();
     TextEditingController userNameCon = TextEditingController();
     TextEditingController bioCon = TextEditingController();
+
     displayCon.text = userData.displayName;
     userNameCon.text = userData.userName;
     bioCon.text = userData.bio;
+    File? profilepic = File(userData.profilePic);
 
     updateProfile() async {
       try {
@@ -43,7 +45,7 @@ class _EditUserProfileState extends State<EditUserProfile> {
           displayName: displayCon.text,
           userName: userNameCon.text,
           bio: bioCon.text,
-          file: file,
+          file: file == '' ? profilepic.readAsBytesSync() : file,
         );
         if (res == 'Success') {
           ScaffoldMessenger.of(context).showSnackBar(
@@ -56,6 +58,7 @@ class _EditUserProfileState extends State<EditUserProfile> {
               ),
             ),
           );
+          setState(() {});
           Navigator.pop(context);
         }
       } on Exception catch (e) {
@@ -78,12 +81,18 @@ class _EditUserProfileState extends State<EditUserProfile> {
                   child: Stack(
                     clipBehavior: Clip.none,
                     children: [
-                      file == null || file == 'assets/images/man.png'
-                          ? const CircleAvatar(
-                              radius: 70,
-                              backgroundImage:
-                                  AssetImage('assets/images/man.png'),
-                            )
+                      file == null
+                          ? file == 'assets/images/man.png'
+                              ? const CircleAvatar(
+                                  radius: 70,
+                                  backgroundImage:
+                                      AssetImage('assets/images/man.png'),
+                                )
+                              : CircleAvatar(
+                                  radius: 70,
+                                  backgroundImage:
+                                      NetworkImage(profilepic.path),
+                                )
                           : CircleAvatar(
                               radius: 70,
                               backgroundImage: MemoryImage(file as Uint8List),
@@ -183,6 +192,8 @@ class _EditUserProfileState extends State<EditUserProfile> {
                       ),
                       onPressed: () {
                         updateProfile();
+                        setState(() {});
+                        Navigator.of(context).pop();
                       },
                       child: Text(
                         'update'.toUpperCase(),

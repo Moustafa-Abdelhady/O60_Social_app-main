@@ -174,7 +174,7 @@ class _ChatPageState extends State<ChatPage> {
 
                       return messagesList[index].fromId == userData.email
                           // email
-                          ? otherChatBuble(
+                          ? OtherChatBuble(
                               message: messagesList[index],
                               id: messagesList[index].fromId,
                             )

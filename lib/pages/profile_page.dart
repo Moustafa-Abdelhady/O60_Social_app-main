@@ -5,6 +5,7 @@ import 'package:gap/gap.dart';
 import 'package:image_stack/image_stack.dart';
 import 'package:o_social_app/constants/colors/app_colors.dart';
 import 'package:o_social_app/models/user_model.dart';
+import 'package:o_social_app/pages/authantication/login_page.dart';
 import 'package:o_social_app/pages/edit_user_profile.dart';
 import 'package:o_social_app/providers/user_provider.dart';
 import 'package:o_social_app/services/cloud.dart';
@@ -35,10 +36,12 @@ class _ProfilePageState extends State<ProfilePage>
   }
 
   var userInfo = {};
+
   int followers = 0;
   int following = 0;
   bool isFollowing = false;
   bool isLoad = true;
+  String dispalyName = '';
 
   getUserData() async {
     try {
@@ -54,6 +57,7 @@ class _ProfilePageState extends State<ProfilePage>
       following = userDetail.data()!['following'].length;
       setState(() {
         isLoad = false;
+        userInfo;
       });
     } on Exception catch (e) {
       e.toString();
@@ -83,7 +87,13 @@ class _ProfilePageState extends State<ProfilePage>
                       IconButton(
                         onPressed: () async {
                           await FirebaseAuth.instance.signOut();
+
                           setState(() {});
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const LoginPage()),
+                          );
                         },
                         icon: const Icon(Icons.logout),
                       )
@@ -336,6 +346,7 @@ class _ProfilePageState extends State<ProfilePage>
                                           // padding:const EdgeInsets.symmetric(horizontal: 8),
                                           child: PostCard(
                                             item: photos,
+                                            userPic: userInfo,
                                           ),
                                         );
                                 },

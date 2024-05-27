@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:o_social_app/constants/colors/app_colors.dart';
 import 'package:o_social_app/models/message.dart';
 
-
-
 class ChatBuble extends StatelessWidget {
   const ChatBuble({
     super.key,
@@ -19,13 +17,14 @@ class ChatBuble extends StatelessWidget {
     return Align(
       alignment: Alignment.centerLeft,
       child: Container(
-        padding: EdgeInsets.only(left: 18, top: 25, bottom: 25, right: 18),
-        margin: EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+        padding:
+            const EdgeInsets.only(left: 18, top: 25, bottom: 25, right: 18),
+        margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
         // transform:Matrix4.translationValues(5, 2, 0),
 
         decoration: BoxDecoration(
           color: kPrimaryColor,
-          borderRadius: BorderRadius.only(
+          borderRadius: const BorderRadius.only(
             topLeft: Radius.circular(32),
             topRight: Radius.circular(32),
             bottomRight: Radius.circular(32),
@@ -36,15 +35,15 @@ class ChatBuble extends StatelessWidget {
           children: [
             Text(
               '${id}',
-              style: TextStyle(
+              style: const TextStyle(
                 color: Colors.white70,
-                fontSize:12,
+                fontSize: 12,
               ),
             ),
-            SizedBox(height:5),
+            const SizedBox(height: 5),
             Text(
               '${message.message}',
-              style: TextStyle(
+              style: const TextStyle(
                 color: Colors.white,
                 fontWeight: FontWeight.bold,
               ),
@@ -56,13 +55,11 @@ class ChatBuble extends StatelessWidget {
   }
 }
 
-
-
-class otherChatBuble extends StatelessWidget {
-  const otherChatBuble({
+class OtherChatBuble extends StatelessWidget {
+  const OtherChatBuble({
     super.key,
     required this.message,
-     required this.id,
+    required this.id,
   });
 
   final Message message;
@@ -88,14 +85,14 @@ class otherChatBuble extends StatelessWidget {
         ),
         child: Column(
           children: [
-             Text(
+            Text(
               '${id}',
               style: TextStyle(
                 color: Colors.white70,
-                fontSize:12,
+                fontSize: 12,
               ),
             ),
-            SizedBox(height:5),
+            SizedBox(height: 5),
             Text(
               '${message.message}',
               style: TextStyle(

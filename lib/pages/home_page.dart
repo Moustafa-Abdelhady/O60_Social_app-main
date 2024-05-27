@@ -1,11 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+
 import 'package:flutter/material.dart';
 import 'package:o_social_app/constants/colors/app_colors.dart';
-import 'package:o_social_app/models/post_model.dart';
+
 import 'package:o_social_app/models/user_model.dart';
-import 'package:o_social_app/pages/chat/chat_page.dart';
+
 import 'package:o_social_app/pages/chat/massenger.dart';
+import 'package:o_social_app/providers/user_provider.dart';
 import 'package:o_social_app/widgets/post_home_card.dart';
+import 'package:provider/provider.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -17,9 +20,12 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
+    UserModel userData = Provider.of<UserProvider>(context).userModel!;
     // CollectionReference posts = FirebaseFirestore.instance.collection('posts').snapshots();
-    late Stream<QuerySnapshot> postsStream =
-        FirebaseFirestore.instance.collection('posts').orderBy('date',descending: true).snapshots();
+    late Stream<QuerySnapshot> postsStream = FirebaseFirestore.instance
+        .collection('posts')
+        .orderBy('date', descending: true)
+        .snapshots();
     return Scaffold(
       appBar: AppBar(
           centerTitle: true,
@@ -42,12 +48,10 @@ class _HomePageState extends State<HomePage> {
           actions: [
             IconButton(
               onPressed: () {
-                  Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) =>
-                                        MassengerPage()),
-                            );
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => MassengerPage()),
+                );
               },
               icon: const Icon(Icons.message),
             ),
@@ -75,7 +79,28 @@ class _HomePageState extends State<HomePage> {
                 final DocumentSnapshot document = documents[index];
                 final Map<String, dynamic> data =
                     document.data() as Map<String, dynamic>;
-                return PostCard(item: document);
+                return FutureBuilder(
+                  future: FirebaseFirestore.instance
+                      .collection('users')
+                      .doc(document['uId'])
+                      .get(),
+                  builder:
+                      (context, AsyncSnapshot<DocumentSnapshot> userSnapshot) {
+                    if (userSnapshot.connectionState ==
+                        ConnectionState.waiting) {
+                      return const Center(child: Text(''));
+                    }
+                    if (userSnapshot.hasError) {
+                      return Text('Error: ${userSnapshot.error}');
+                    }
+                    final userIn = userSnapshot.data!.data();
+                    return PostCard(
+                      item: document,
+                      userPic: userIn,
+                    );
+                  },
+                );
+
                 // return const Text('lol');
               },
             );

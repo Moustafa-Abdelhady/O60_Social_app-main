@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:o_social_app/constants/colors/app_colors.dart';
@@ -12,9 +13,11 @@ class PostCard extends StatefulWidget {
   const PostCard({
     super.key,
     required this.item,
+    required this.userPic,
   });
 
   final item;
+  final userPic;
 
   @override
   State<PostCard> createState() => _PostCardState();
@@ -26,6 +29,7 @@ class _PostCardState extends State<PostCard> {
   @override
   void initState() {
     getComentCount();
+
     super.initState();
   }
 
@@ -33,7 +37,7 @@ class _PostCardState extends State<PostCard> {
     try {
       QuerySnapshot comments = await FirebaseFirestore.instance
           .collection('posts')
-          .doc(widget.item['postId'])
+          .doc(widget.item['uId'])
           .collection('comments')
           .get();
       if (this.mounted) {
@@ -48,7 +52,8 @@ class _PostCardState extends State<PostCard> {
 
   @override
   Widget build(BuildContext context) {
-    UserModel userData = Provider.of<UserProvider>(context).userModel!;
+    // UserModel userData = Provider.of<UserProvider>(context).userModel!;
+
     print('desc' + widget.item['description']);
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 5),
@@ -66,18 +71,15 @@ class _PostCardState extends State<PostCard> {
           children: [
             Row(
               children: [
-                widget.item['uId'] != userData.uId && userData.profilePic == ""
+                widget.userPic['profilePic'].isEmpty &&
+                        widget.userPic['profilePic'] == null
                     ? const CircleAvatar(
                         backgroundImage: AssetImage('assets/images/man.png'),
                       )
-                    : userData.profilePic != ""
-                        ? CircleAvatar(
-                            backgroundImage: NetworkImage(userData.profilePic),
-                          )
-                        : const CircleAvatar(
-                            backgroundImage:
-                                AssetImage('assets/images/man.png'),
-                          ),
+                    : CircleAvatar(
+                        backgroundImage:
+                            NetworkImage(widget.userPic['profilePic']),
+                      ),
                 const Gap(10),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -144,12 +146,12 @@ class _PostCardState extends State<PostCard> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 IconButton(
-                  icon: widget.item['like'].contains(userData.uId)
+                  icon: widget.item['like'].contains(widget.userPic['uId'])
                       ? Icon(Icons.favorite, color: kPrimaryColor)
                       : const Icon(Icons.favorite),
                   onPressed: () {
-                    CloudMethods().likePost(widget.item['postId'], userData.uId,
-                        widget.item['like']);
+                    CloudMethods().likePost(widget.item['postId'],
+                        widget.userPic['uId'], widget.item['like']);
                   },
                 ),
                 Text(widget.item['like'].length.toString()),
