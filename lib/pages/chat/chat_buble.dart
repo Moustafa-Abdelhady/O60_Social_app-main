@@ -70,11 +70,10 @@ class OtherChatBuble extends StatelessWidget {
     return Align(
       alignment: Alignment.centerRight,
       child: Container(
-        padding: EdgeInsets.only(left: 18, top: 25, bottom: 25, right: 18),
-        margin: EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-        // transform:Matrix4.translationValues(5, 2, 0),
-
-        decoration: BoxDecoration(
+        padding:
+            const EdgeInsets.only(left: 18, top: 25, bottom: 25, right: 18),
+        margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+        decoration: const BoxDecoration(
           color: Color(0xff006D84),
           borderRadius: BorderRadius.only(
             topLeft: Radius.circular(32),
@@ -87,15 +86,15 @@ class OtherChatBuble extends StatelessWidget {
           children: [
             Text(
               '${id}',
-              style: TextStyle(
+              style: const TextStyle(
                 color: Colors.white70,
                 fontSize: 12,
               ),
             ),
-            SizedBox(height: 5),
+            const SizedBox(height: 5),
             Text(
               '${message.message}',
-              style: TextStyle(
+              style: const TextStyle(
                 color: Colors.white,
                 fontWeight: FontWeight.bold,
               ),

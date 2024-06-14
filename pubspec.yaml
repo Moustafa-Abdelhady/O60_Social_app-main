@@ -46,6 +46,7 @@ dependencies:
   image_stack: ^2.1.1
   provider: ^6.1.1
   flutter_bloc: ^8.1.3
+  shimmer: ^3.0.0
 
 
 dev_dependencies:

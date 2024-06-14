@@ -31,7 +31,6 @@ final chatRoomId = const Uuid().v1();
 
 class _ChatPageState extends State<ChatPage> {
 // make instance from firestore
-  // FirebaseFirestore firestore = FirebaseFirestore.instance;
 
   List<Message> messagesList = [];
 
@@ -44,35 +43,12 @@ class _ChatPageState extends State<ChatPage> {
 
   @override
   Widget build(BuildContext context) {
+    print('...${widget.uId}');
     UserModel userData = Provider.of<UserProvider>(context).userModel!;
     final currUser = FirebaseAuth.instance.currentUser!.email;
 
-    ///way to recieve arguments(email) from navigator..
-    /////if i know the reciever value is String use as String
-    //example >> String email =ModalRoute.of(context)!.settings.arguments as String;
-
-    //if u don't knew the reciever value use var
-    // var email = ModalRoute.of(context)!.settings.arguments;
-    // String username =
-    //     email.toString().substring(0, email.toString().indexOf('@'));
-    // print(username);
-
-    ///streamBuilder<querysnapshot> used it with realTime
-    // return StreamBuilder<QuerySnapshot>(
-    //     stream: messages.orderBy('createdAt', descending: true).snapshots(),
-    //     builder: (context, snapshot) {
-    //       if (snapshot.hasData) {
-    //         List<Message> messagesList = [];
-    //         for (int i = 0; i < snapshot.data!.docs.length; i++) {
-    //           messagesList.add(Message.fromJsson(snapshot.data!.docs[i]));
-    //         }
-    //       }
-    //     });
-
     return Scaffold(
       appBar: AppBar(
-        // automaticallyImplyLeading: false,
-        // backgroundColor: kPrimaryColor,
         title: Text.rich(
           TextSpan(
             children: [
@@ -97,11 +73,9 @@ class _ChatPageState extends State<ChatPage> {
             child: StreamBuilder<QuerySnapshot>(
               stream: messages
                   .orderBy('createdAt', descending: true)
-                  .where('fromId', whereIn: [currUser, widget.uId]).snapshots(),
-              // .where('toId',arrayContainsAny:[widget.uId,userData.email]).snapshots(),
+                  .where('fromId', whereIn: [currUser]).snapshots(),
               builder: (BuildContext context,
                   AsyncSnapshot<QuerySnapshot> snapshot) {
-                // dynamic messagesList = CloudMethods().getMessages();
                 if (snapshot.hasError) {
                   return const Center(
                     child: Text('Error'),
@@ -113,7 +87,7 @@ class _ChatPageState extends State<ChatPage> {
                 }
 
                 if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-                  return Center(
+                  return const Center(
                     child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
@@ -157,22 +131,16 @@ class _ChatPageState extends State<ChatPage> {
                     controller: scrollController,
                     itemCount: messagesList.length,
                     itemBuilder: (context, index) {
-                      if (messagesList.isEmpty) {
-                        return const Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text('Say Hey'),
-                              Icon(Icons.waving_hand)
-                            ]);
-                      }
                       // var mes = messagesList
                       //     .map((e) => e.toId == widget.uId)
                       //     .toList()
                       //     .cast<Message>();
 
                       // messagesList.map((e) => null)
-
-                      return messagesList[index].fromId == userData.email
+                      print('.......${messagesList[index].toId}');
+                      print('****${messagesList[index].fromId}');
+                      print('0000${currUser}');
+                      return messagesList[index].toId == widget.uId
                           // email
                           ? OtherChatBuble(
                               message: messagesList[index],
@@ -180,7 +148,7 @@ class _ChatPageState extends State<ChatPage> {
                             )
                           : ChatBuble(
                               message: messagesList[index],
-                              id: messagesList[index].toId,
+                              id: widget.uId,
                             );
                     });
               },

@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:o_social_app/constants/colors/app_colors.dart';
@@ -7,17 +6,18 @@ import 'package:o_social_app/models/user_model.dart';
 import 'package:o_social_app/pages/comment_screen.dart';
 import 'package:o_social_app/providers/user_provider.dart';
 import 'package:o_social_app/services/cloud.dart';
+import 'package:o_social_app/widgets/shimmer_widget.dart';
 import 'package:provider/provider.dart';
 
 class PostCard extends StatefulWidget {
   const PostCard({
     super.key,
     required this.item,
-    required this.userPic,
+    // required this.userPic,
   });
 
   final item;
-  final userPic;
+  // final userPic;
 
   @override
   State<PostCard> createState() => _PostCardState();
@@ -25,24 +25,27 @@ class PostCard extends StatefulWidget {
 
 class _PostCardState extends State<PostCard> {
   int commentCount = 0;
+  late Map<String, dynamic> userPic;
 
   @override
   void initState() {
-    getComentCount();
-
     super.initState();
+    getComentCount();
   }
 
   getComentCount() async {
     try {
       QuerySnapshot comments = await FirebaseFirestore.instance
           .collection('posts')
-          .doc(widget.item['uId'])
+          .doc(widget.item['postId'])
           .collection('comments')
           .get();
-      if (this.mounted) {
+      comments.docs.length;
+      commentCount = comments.docs.length;
+      print('comnt ${comments}');
+      if (mounted) {
         setState(() {
-          commentCount = comments.docs.length;
+          commentCount;
         });
       }
     } on Exception catch (e) {
@@ -52,8 +55,7 @@ class _PostCardState extends State<PostCard> {
 
   @override
   Widget build(BuildContext context) {
-    // UserModel userData = Provider.of<UserProvider>(context).userModel!;
-
+    UserModel userData = Provider.of<UserProvider>(context).userModel!;
     print('desc' + widget.item['description']);
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 5),
@@ -69,36 +71,54 @@ class _PostCardState extends State<PostCard> {
         ),
         child: Column(
           children: [
-            Row(
-              children: [
-                widget.userPic['profilePic'].isEmpty &&
-                        widget.userPic['profilePic'] == null
-                    ? const CircleAvatar(
-                        backgroundImage: AssetImage('assets/images/man.png'),
-                      )
-                    : CircleAvatar(
-                        backgroundImage:
-                            NetworkImage(widget.userPic['profilePic']),
-                      ),
-                const Gap(10),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+            FutureBuilder(
+              future: FirebaseFirestore.instance
+                  .collection('users')
+                  .doc(widget.item['uId'])
+                  .get(),
+              builder: (context, AsyncSnapshot<DocumentSnapshot> userSnapshot) {
+                if (userSnapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(
+                      child: ShimmerWidget.rectangular(200, 300));
+                }
+                if (userSnapshot.hasError) {
+                  return Text('Error: ${userSnapshot.error}');
+                }
+                final userIn = userSnapshot.data;
+
+                return Row(
                   children: [
-                    Text(widget.item['displayName'],
-                        style: const TextStyle(fontWeight: FontWeight.bold)),
-                    Text("@" + widget.item['userName']),
-                  ],
-                ),
-                const Spacer(),
-                Column(
-                  children: [
-                    Text(widget.item['date']
-                        .toDate()
-                        .toString()
-                        .substring(0, 16)),
-                  ],
-                ),
-              ],
+                    userIn!['profilePic'].isEmpty &&
+                            userIn['profilePic'] == null
+                        ? const CircleAvatar(
+                            backgroundImage:
+                                AssetImage('assets/images/man.png'),
+                          )
+                        : CircleAvatar(
+                            backgroundImage: NetworkImage(userIn['profilePic']),
+                          ),
+                    const Gap(10),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(widget.item['displayName'],
+                            style:
+                                const TextStyle(fontWeight: FontWeight.bold)),
+                        Text("@" + widget.item['userName']),
+                      ],
+                    ),
+                    const Spacer(),
+                    Column(
+                      children: [
+                        Text(widget.item['date']
+                            .toDate()
+                            .toString()
+                            .substring(0, 16)),
+                      ],
+                    ),
+                  ].toList(),
+                );
+              },
             ),
             const Gap(20),
             Padding(
@@ -134,9 +154,8 @@ class _PostCardState extends State<PostCard> {
                       : Container(
                           margin: const EdgeInsets.all(12),
                           height: 30,
-                          decoration: BoxDecoration(
-                            borderRadius:
-                                const BorderRadius.all(Radius.circular(10)),
+                          decoration: const BoxDecoration(
+                            borderRadius: BorderRadius.all(Radius.circular(10)),
                           ),
                         ),
                 ),
@@ -146,12 +165,12 @@ class _PostCardState extends State<PostCard> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 IconButton(
-                  icon: widget.item['like'].contains(widget.userPic['uId'])
+                  icon: widget.item['like'].contains(userData.uId)
                       ? Icon(Icons.favorite, color: kPrimaryColor)
                       : const Icon(Icons.favorite),
                   onPressed: () {
-                    CloudMethods().likePost(widget.item['postId'],
-                        widget.userPic['uId'], widget.item['like']);
+                    CloudMethods().likePost(widget.item['postId'], userData.uId,
+                        widget.item['like']);
                   },
                 ),
                 Text(widget.item['like'].length.toString()),

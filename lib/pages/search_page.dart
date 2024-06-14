@@ -4,9 +4,9 @@ import 'package:o_social_app/constants/colors/app_colors.dart';
 import 'package:o_social_app/pages/profile_page.dart';
 
 class SearchPage extends StatefulWidget {
-  const SearchPage({super.key,});
-
-  
+  const SearchPage({
+    super.key,
+  });
 
   @override
   State<SearchPage> createState() => _SearchPageState();
@@ -14,8 +14,6 @@ class SearchPage extends StatefulWidget {
 
 class _SearchPageState extends State<SearchPage> {
   TextEditingController searchCont = TextEditingController();
-
-  
 
   @override
   Widget build(BuildContext context) {
@@ -60,7 +58,7 @@ class _SearchPageState extends State<SearchPage> {
                   builder: (BuildContext context,
                       AsyncSnapshot<QuerySnapshot> snapshot) {
                     if (snapshot.hasError) {
-                      return Center(
+                      return const Center(
                         child: Text('Error'),
                       );
                     }
@@ -75,7 +73,8 @@ class _SearchPageState extends State<SearchPage> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) =>  ProfilePage(uId:userData['uId'])),
+                                    builder: (context) =>
+                                        ProfilePage(uId: userData['uId'])),
                               );
                             },
                             child: ListTile(

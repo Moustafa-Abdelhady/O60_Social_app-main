@@ -10,6 +10,7 @@ import 'package:o_social_app/pages/edit_user_profile.dart';
 import 'package:o_social_app/providers/user_provider.dart';
 import 'package:o_social_app/services/cloud.dart';
 import 'package:o_social_app/widgets/post_home_card.dart';
+import 'package:o_social_app/widgets/shimmer_widget.dart';
 import 'package:provider/provider.dart';
 
 class ProfilePage extends StatefulWidget {
@@ -242,6 +243,11 @@ class _ProfilePageState extends State<ProfilePage>
                               );
                             }
                             if (snapshot.connectionState ==
+                                ConnectionState.waiting) {
+                              return const Center(
+                                  child: ShimmerWidget.rectangular(200, 200));
+                            }
+                            if (snapshot.connectionState ==
                                 ConnectionState.done) {
                               // dynamic lenSearch = snapshot.data!;
                               return RefreshIndicator(
@@ -314,6 +320,13 @@ class _ProfilePageState extends State<ProfilePage>
                                 child: Text('Error'),
                               );
                             }
+
+                            if (snapshot.connectionState ==
+                                ConnectionState.waiting) {
+                              return const Center(
+                                  child: ShimmerWidget.rectangular(200, 200));
+                            }
+
                             if (snapshot.connectionState ==
                                 ConnectionState.done) {
                               // dynamic lenSearch = snapshot.data!;
@@ -346,14 +359,14 @@ class _ProfilePageState extends State<ProfilePage>
                                           // padding:const EdgeInsets.symmetric(horizontal: 8),
                                           child: PostCard(
                                             item: photos,
-                                            userPic: userInfo,
+                                            // userPic: userInfo,
                                           ),
                                         );
                                 },
                               );
                             }
                             return const Center(
-                                child: CircularProgressIndicator());
+                                child: ShimmerWidget.rectangular(200, 200));
                           },
                         ),
                       ],
@@ -389,10 +402,6 @@ class CustomFollowButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ElevatedButton(
-        // style:ElevatedButton.styleFrom(
-        //    foregroundColor:forgroundColor,
-        //      backgroundColor:backgroundColor,
-        // ),
         style: ButtonStyle(
           shape: MaterialStateProperty.resolveWith((states) => shape),
           foregroundColor:
@@ -447,9 +456,9 @@ class FollowersCard extends StatelessWidget {
             imageBorderColor: Colors.white,
             totalCount: 0,
           ),
-          Gap(5),
+          const Gap(5),
           Row(
-            children: [Text(followNum.toString()), Gap(5), Text(follow)],
+            children: [Text(followNum.toString()), const Gap(5), Text(follow)],
           ),
         ],
       ),

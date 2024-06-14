@@ -51,7 +51,7 @@ class _CommentScreenState extends State<CommentScreen> {
     UserModel userData = Provider.of<UserProvider>(context).userModel!;
     return Scaffold(
         appBar: AppBar(
-          title: Text('Comments'),
+          title: const Text('Comments'),
         ),
         body: Padding(
           padding: const EdgeInsets.all(8.0),

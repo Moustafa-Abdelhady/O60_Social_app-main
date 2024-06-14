@@ -31,15 +31,6 @@ class _AddPageState extends State<AddPage> {
     Uint8List? file,
   ) async {
     try {
-      // String createUint8ListString() {
-      // if (file == null) {
-      //   return file = ""; // Return empty string if the Uint8List is null
-      // }
-
-      //   // Convert the Uint8List to a string representation
-      //   return file.toString();
-      // }
-
       String res = await CloudMethods().uploadPost(
         description: description.isNotEmpty ? descCont.text : description,
         uId: uId,
@@ -48,51 +39,11 @@ class _AddPageState extends State<AddPage> {
         userName: userName,
         file: file,
       );
-
-      // file ?? Uint8List.fromList([]),
-
-      // if (file == null) {
-      //   await FirebaseFirestore.instance.collection('posts').add({
-      //     'uId': uId,
-      //     'displayName': displayName,
-      //     'userName': userName,
-      //     'profilePic': profilePic,
-      //     'description': description,
-      //     'date': Timestamp.now(),
-      //   });
-      // } else {
-      //   String res = await CloudMethods().uploadPost(
-      //     description: description.isNotEmpty ? descCont.text : description,
-      //     uId: uId,
-      //     profilePic: profilePic,
-      //     displayName: displayName,
-      //     userName: userName,
-      //     file: file ?? '' as Uint8List,
-      //   );
-      // }
     } catch (e) {
       return e.toString();
     }
   }
 
-  // uploadText(
-  //   String uId,
-  //   String displayName,
-  //   String userName,
-  //   String profilePic,
-  //   String description,
-  // ) async {
-  //   await FirebaseFirestore.instance.collection('posts').add({
-  //     'postId': uId,
-  //     'displayName': displayName,
-  //     'userName': userName,
-  //     'profilePic': profilePic,
-  //     'description': description,
-  //     'date': Timestamp.now(),
-  //   });
-  // }
-
-// 'date': Timestamp.now(),
   @override
   Widget build(BuildContext context) {
     UserModel userDetail = Provider.of<UserProvider>(context).userModel!;
@@ -108,13 +59,6 @@ class _AddPageState extends State<AddPage> {
         actions: [
           TextButton(
             onPressed: () {
-              // if (file == null) {
-              //   uploadText(userDetail.uId, userDetail.displayName,
-              //       userDetail.userName, userDetail.profilePic, descCont.text);
-              // } else {
-              //   uploadPost(userDetail.uId, userDetail.displayName,
-              //       userDetail.userName, userDetail.profilePic, descCont.text);
-              // }
               uploadPost(
                   userDetail.uId,
                   userDetail.displayName,
@@ -162,13 +106,7 @@ class _AddPageState extends State<AddPage> {
             ),
             Expanded(
               child: file == null || file == ''
-                  ? Container(
-                      // height: 100,
-                      // child: Text(
-                      //   descCont.text,
-                      //   style: TextStyle(fontSize: 16),
-                      // ),
-                      )
+                  ? Container()
                   : Container(
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(12),
@@ -195,15 +133,6 @@ class _AddPageState extends State<AddPage> {
                 setState(() {
                   file = myFile;
                 });
-
-                // if (file != null || file != '') {
-                //   Uint8List? myFile = await pickImage();
-                //   setState(() {
-                //     file = myFile;
-                //   });
-                // } else {
-                //   dynamic myFile = '' as String;
-                // }
               },
               child: Icon(
                 semanticLabel: "media",

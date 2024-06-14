@@ -1,4 +1,3 @@
-// import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:gap/gap.dart';
@@ -6,7 +5,6 @@ import 'package:o_social_app/constants/colors/app_colors.dart';
 import 'package:o_social_app/navigation_bar_layout.dart';
 import 'package:o_social_app/pages/authantication/register_page.dart';
 import 'package:o_social_app/services/auth.dart';
-// import 'package:flutter/widgets.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -31,7 +29,7 @@ class _LoginPageState extends State<LoginPage> {
         ScaffoldMessenger.of(context).showSnackBar(snackbar);
         Navigator.pushAndRemoveUntil(
             context,
-            MaterialPageRoute(builder: (context) =>const NavBarLayout()),
+            MaterialPageRoute(builder: (context) => const NavBarLayout()),
             (route) => false);
       } else if (loginRes == "Please enter all fields" || loginRes == null) {
         // ignore: use_build_context_synchronously
@@ -119,15 +117,18 @@ class _LoginPageState extends State<LoginPage> {
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(16))),
                   onPressed: () {
-  
-                    if (emailCont.text.isEmpty|| emailCont.text.contains('@') & passwordCont.text.isEmpty || passwordCont.text.length < 8){
-                       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                   content: Center(child: Text('Please enter an valid Mail and password')),
-                       ));
+                    if (emailCont.text.isEmpty ||
+                        emailCont.text.contains('@') &
+                            passwordCont.text.isEmpty ||
+                        passwordCont.text.length < 8) {
+                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                        content: Center(
+                            child: Text(
+                                'Please enter an valid Mail and password')),
+                      ));
                     } else {
-                       signIn();
-                          }
-                    
+                      signIn();
+                    }
                   },
                   child: Text(
                     'login'.toUpperCase(),
@@ -153,7 +154,8 @@ class _LoginPageState extends State<LoginPage> {
                       (route) => false),
                   child: Text(
                     'Register  ',
-                    style: TextStyle(color: kPrimaryColor , fontWeight:FontWeight.bold),
+                    style: TextStyle(
+                        color: kPrimaryColor, fontWeight: FontWeight.bold),
                   ),
                 ),
               ],
